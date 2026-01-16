@@ -43,6 +43,7 @@
 # resize-overlay-duration = 4s 200ms
 
 custom-shader = ~/.config/ghostty/shaders/cursor_smear_march.glsl
+# custom-shader = ~/.config/ghostty/shaders/sahaj-shaders/cursor_tail.glsl
 
 font-family = "Maple Mono NF CN"
 font-style-bold = "Medium"
