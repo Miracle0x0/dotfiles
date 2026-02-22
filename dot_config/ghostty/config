@@ -42,8 +42,11 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-custom-shader = ~/.config/ghostty/shaders/cursor_smear_march.glsl
+# custom-shader = ~/.config/ghostty/shaders/cursor.glsl
+# custom-shader = ~/.config/ghostty/shaders/cursor_smear_march.glsl
+custom-shader = ~/.config/ghostty/shaders/cursor_smear_march_focus.glsl
 # custom-shader = ~/.config/ghostty/shaders/sahaj-shaders/cursor_tail.glsl
+custom-shader-animation = false
 
 font-family = "Maple Mono NF CN"
 font-style-bold = "Medium"
@@ -71,8 +74,24 @@ clipboard-read = allow
 clipboard-write = allow
 copy-on-select = clipboard
 background-opacity = 0.95
+background-blur = true
 window-height = 32
 window-width = 120
 macos-titlebar-style = native
 term = xterm-256color
 # term = xterm-kitty
+
+# Split navigation
+keybind = ctrl+shift+k=goto_split:top
+keybind = ctrl+shift+j=goto_split:bottom
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
+
+# Split resizing
+keybind = super+ctrl+down=resize_split:down,100
+keybind = super+ctrl+left=resize_split:left,100
+keybind = super+ctrl+up=resize_split:up,100
+keybind = super+ctrl+right=resize_split:right,100
+
+# Reload config
+keybind = super+shift+comma=reload_config
