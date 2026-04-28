@@ -1,0 +1,36 @@
+return { -- override blink.cmp plugin
+  "Saghen/blink.cmp",
+  opts = {
+    -- keymap = {
+    --   ["<Tab>"] = { "snippet_forward", "fallback" },
+    -- },
+    completion = {
+      menu = {
+        auto_show = true,
+        auto_show_delay_ms = 50,
+      },
+      -- ghost_text = {
+      --   enabled = true,
+      --   show_with_menu = false,
+      -- },
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+        sorts = {
+          "exact",
+          -- defaults
+          "score",
+          "sort_text",
+        },
+      },
+    },
+    signature = {
+      enabled = false,
+      trigger = {
+        enabled = false,
+      },
+    },
+    documentation = {
+      auto_show = false,
+    },
+  },
+}

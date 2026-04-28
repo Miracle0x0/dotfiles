@@ -13,14 +13,14 @@ return {
     -- Configuration table of features provided by AstroLSP
     features = {
       codelens = true, -- enable/disable codelens refresh on start
-      inlay_hints = true, -- enable/disable inlay hints on start
+      inlay_hints = false, -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
     },
     -- customize lsp formatting options
     formatting = {
       -- control auto formatting on save
       format_on_save = {
-        enabled = true, -- enable or disable format on save globally
+        enabled = false, -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
           -- "go",
         },
@@ -32,6 +32,15 @@ return {
         -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
         -- "lua_ls",
       },
+      filter = function(client)
+        -- only enable bibtex-tidy for bibtex files
+        if vim.bo.filetype == "bib" then
+          return client.name == "bibtex-tidy"
+        end
+
+        -- enable all other clients
+        return true
+      end,
       timeout_ms = 1000, -- default format timeout
       -- filter = function(client) -- fully override the default formatting function
       --   return true
@@ -41,9 +50,10 @@ return {
     servers = {
       -- "pyright"
     },
-    -- customize language server configuration options passed to `lspconfig`
-    ---@diagnostic disable: missing-fields
+    -- customize language server configuration passed to `vim.lsp.config`
+    -- client specific configuration can also go in `lsp/` in your configuration root (see `:h lsp-config`)
     config = {
+      -- ["*"] = { capabilities = {} }, -- modify default LSP client settings such as capabilities
       clangd = {
         capabilities = { offsetEncoding = "utf-8" },
         cmd = {
@@ -60,28 +70,27 @@ return {
         },
       },
       ty = {
-        -- ty language server settings to here
         cmd = { "ty", "server" },
         filetypes = { "python" },
-        inlayHints = {
-          variableTypes = false,
-        },
-        completions = {
-          autoImport = true,
-        },
-        -- root_dir = vim.fs.root(0, { ".git/", "pyproject.toml" }),
-        root_dir = function(fname) return vim.fs.root(fname, { ".git", "pyproject.toml" }) end,
+        root_dir = function(...)
+          return require("lspconfig.util").root_pattern(
+            "ty.toml",
+            "pyproject.toml",
+            "setup.py",
+            "setup.cfg",
+            "requirements.txt",
+            ".git"
+          )(...)
+        end,
       },
     },
     -- customize how language servers are attached
     handlers = {
-      -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
-      -- function(server, opts) require("lspconfig")[server].setup(opts) end
+      -- a function with the key `*` modifies the default handler, functions takes the server name as the parameter
+      -- ["*"] = function(server) vim.lsp.enable(server) end
 
-      -- the key is the server that is being setup with `lspconfig`
+      -- the key is the server that is being setup with `vim.lsp.config`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
-      -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
-      ty = function(_, opts) require("lspconfig").ty.setup(opts) end,
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {
@@ -123,32 +132,8 @@ return {
         },
       },
     },
-    -- mason_lspconfig = {
-    --   -- Allow registering more Mason packages as language servers for autodetection/setup
-    --   servers = {
-    --     -- The key is the lspconfig server name to register a package for
-    --     ty = {
-    --       -- The Mason package name to register to the language server
-    --       package = "ty",
-    --       -- The filetypes that apply to the package and language server
-    --       filetypes = { "python" },
-    --       -- (Optional) any default configuration changes that may need to happen (can be a table or a function that returns a table)
-    --       config = {
-    --         cmd = { "ty", "server" },
-    --         filetypes = { "python" },
-    --         inlayHints = {
-    --           variableTypes = false,
-    --         },
-    --         completions = {
-    --           autoImport = true,
-    --         },
-    --         root_dir = function(fname) vim.fs.root(0, { ".git/", "pyproject.toml" }) end,
-    --       },
-    --     },
-    --   },
-    -- },
     -- A custom `on_attach` function to be run after the default `on_attach` function
-    -- takes two parameters `client` and `bufnr`  (`:h lspconfig-setup`)
+    -- takes two parameters `client` and `bufnr`  (`:h lsp-attach`)
     on_attach = function(client, bufnr)
       -- this would disable semanticTokensProvider for all clients
       -- client.server_capabilities.semanticTokensProvider = nil

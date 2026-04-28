@@ -6,6 +6,7 @@
 
 ---@type LazySpec
 return {
+
   { "wakatime/vim-wakatime", lazy = false },
 
   {
@@ -20,35 +21,6 @@ return {
   {
     "fei6409/log-highlight.nvim",
     opts = {},
-  },
-
-  -- For `plugins/markview.lua` users.
-  {
-    "OXY2DEV/markview.nvim",
-    lazy = false,
-
-    -- For blink.cmp's completion
-    -- source
-    -- dependencies = {
-    --     "saghen/blink.cmp"
-    -- },
-    config = function()
-      require("markview").setup {
-        ---@type markview.config
-        markdown = {
-          list_items = {
-            shift_width = function(buffer, item)
-              ---@type integer Parent list items indent. Must be at least 1.
-              local parent_indnet = math.max(1, item.indent - vim.bo[buffer].shiftwidth)
-              return item.indent * (1 / (parent_indnet * 2))
-            end,
-            marker_minus = {
-              add_padding = function(_, item) return item.indent > 1 end,
-            },
-          },
-        },
-      }
-    end,
   },
 
   {
@@ -91,31 +63,31 @@ return {
     end,
   },
 
-  {
-    "coder/claudecode.nvim",
-    lazy = false,
-    dependencies = { "folke/snacks.nvim" },
-    config = true,
-    keys = {
-      { "<leader>a", nil, desc = "AI/Claude Code" },
-      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
-      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-      {
-        "<leader>as",
-        "<cmd>ClaudeCodeTreeAdd<cr>",
-        desc = "Add file",
-        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
-      },
-      -- Diff management
-      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
-    },
-  },
+  -- {
+  --   "coder/claudecode.nvim",
+  --   lazy = false,
+  --   dependencies = { "folke/snacks.nvim" },
+  --   config = true,
+  --   keys = {
+  --     { "<leader>a", nil, desc = "AI/Claude Code" },
+  --     { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+  --     { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+  --     { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+  --     { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+  --     { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+  --     { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+  --     { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+  --     {
+  --       "<leader>as",
+  --       "<cmd>ClaudeCodeTreeAdd<cr>",
+  --       desc = "Add file",
+  --       ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+  --     },
+  --     -- Diff management
+  --     { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+  --     { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+  --   },
+  -- },
 
   {
     "lervag/vimtex",
@@ -124,6 +96,48 @@ return {
     init = function()
       -- VimTeX configuration goes here, e.g.
       vim.g.vimtex_view_method = "zathura"
+    end,
+  },
+
+  {
+    "yelog/marklive.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    lazy = true,
+    ft = "markdown",
+    opts = {},
+  },
+
+  {
+    "bullets-vim/bullets.vim",
+    config = function() vim.g.bullets_enabled_file_types = { "markdown", "text", "gitcommit", "scratch" } end,
+  },
+
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      "TmuxNavigatePrevious",
+      "TmuxNavigatorProcessList",
+    },
+    keys = {
+      { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+      { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+      { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+      { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+      { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+    },
+  },
+
+  {
+    "kkew3/jieba.vim",
+    tag = "v2.1.0",
+    build = ":call jieba_vim#install()",
+    init = function()
+      vim.g.jieba_vim_lazy = 1
+      vim.g.jieba_vim_keymap = 1
     end,
   },
 
@@ -159,38 +173,6 @@ return {
           }, "\n"),
         },
       },
-      image = {
-        -- your image configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-        enabled = false,
-        doc = {
-          -- Personally I set this to false, I don't want to render all the
-          -- images in the file, only when I hover over them
-          -- render the image inline in the buffer
-          -- if your env doesn't support unicode placeholders, this will be disabled
-          -- takes precedence over `opts.float` on supported terminals
-          inline = vim.g.neovim_mode == "skitty" and true or false,
-          only_render_image_at_cursor = vim.g.neovim_mode == "skitty" and false or true,
-          -- render the image in a floating window
-          -- only used if `opts.inline` is disabled
-          float = true,
-          -- Sets the size of the image
-          -- max_width = vim.g.neovim_mode == "skitty" and 20 or 60,
-          -- max_height = vim.g.neovim_mode == "skitty" and 10 or 30,
-          max_width = vim.g.neovim_mode == "skitty" and 5 or 60,
-          max_height = vim.g.neovim_mode == "skitty" and 2.5 or 30,
-          -- Apparently, all the images that you preview in neovim are converted
-          -- to .png and they're cached, original image remains the same, but
-          -- the preview you see is a png converted version of that image
-          --
-          -- Where are the cached images stored?
-          -- This path is found in the docs
-          -- :lua print(vim.fn.stdpath("cache") .. "/snacks/image")
-          -- For me returns `~/.cache/neobean/snacks/image`
-          -- Go 1 dir above and check `sudo du -sh ./* | sort -hr | head -n 5`
-        },
-      },
     },
   },
 
@@ -201,10 +183,12 @@ return {
   {
     "L3MON4D3/LuaSnip",
     config = function(plugin, opts)
-      require "astronvim.plugins.configs.luasnip"(plugin, opts) -- include the default astronvim config that calls the setup call
       -- add more custom luasnip configuration such as filetype extend or custom snippets
       local luasnip = require "luasnip"
       luasnip.filetype_extend("javascript", { "javascriptreact" })
+
+      -- include the default astronvim config that calls the setup call
+      require "astronvim.plugins.configs.luasnip"(plugin, opts)
     end,
   },
 
