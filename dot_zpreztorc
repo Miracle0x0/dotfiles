@@ -1,0 +1,35 @@
+# 文件路径: ~/.zpreztorc
+
+zstyle ':prezto:*:*' color 'yes'
+
+# 加载 Prezto 模块
+# 注意：顺序很重要。'syntax-highlighting' 必须放在最后。
+zstyle ':prezto:load' pmodule \
+  'environment' \
+  'terminal' \
+  'editor' \
+  'history' \
+  'directory' \
+  'spectrum' \
+  'utility' \
+  'git' \
+  'rsync' \
+  'conda-zsh-completion' \
+  'archive' \
+  'autosuggestions' \
+  'prompt' \
+  'syntax-highlighting' \
+  'completion' \
+  'fzf-tab'
+
+zstyle ':prezto:module:completion' case-sensitive 'no'
+
+# 对应关系说明：
+# omz: extract -> prezto: archive
+# omz: zsh-autosuggestions -> prezto: autosuggestions
+# omz: zsh-syntax-highlighting -> prezto: syntax-highlighting
+# omz: git -> prezto: git
+# omz: conda-zsh-completion -> prezto: completion (Prezto 的补全模块非常强大，通常无需额外插件即可处理 conda)
+
+# 配置 Prompt (虽然你用了 Starship，但 Prezto 需要初始化这个模块)
+zstyle ':prezto:module:prompt' theme 'sorin' 
