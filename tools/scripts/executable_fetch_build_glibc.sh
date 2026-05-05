@@ -8,7 +8,7 @@ mkdir -p ~/.local/lib
 pushd ~/.local/lib
 
 wget https://mirrors.ustc.edu.cn/gnu/glibc/glibc-${GLIBC_VERSION}.tar.gz
-tar -axvf glibc-${GLIBC_VERSION}.tar.gz
+tar -axvf glibc-${GLIBC_VERSION}.tar.gz && cd glibc-${GLIBC_VERSION}
 mkdir build && cd build
 ../configure --prefix=$HOME/.local/lib/glibc${GLIBC_VERSION}
 make -j$(($(nproc) / 2))
